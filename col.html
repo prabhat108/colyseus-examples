@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Colyseus Chat App</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/colyseus.js@latest/dist/colyseus.min.js"></script>
+</head>
+<body>
+
+  <header>
+    <h1>Colyseus Chat App</h1>
+  </header>
+
+  <main>
+
+    <section id="chat">
+      <input type="text" id="message" placeholder="Enter your message here...">
+      <button type="button" id="send">Send</button>
+      <ul id="chat-messages"></ul>
+    </section>
+
+  </main>
+
+  <script>
+
+    // Create a new Colyseus client
+    const client = new Colyseus.Client("ws://localhost:2567");
+
+    // Join the "chat" room
+    const room = client.join("chat");
+
+    // Listen for incoming messages
+    room.onMessage((message) => {
+      const chatMessageElement = document.createElement("li");
+      chatMessageElement.textContent = message;
+      document.getElementById("chat-messages").appendChild(chatMessageElement);
+    });
+
+    // Send a message when the user clicks the "Send" button
+    document.getElementById("send").addEventListener("click", () => {
+      const message = document.getElementById("message").value;
+      room.send({
+        type: "message",
+        payload: message
+      });
+    });
+
+  </script>
+
+</body>
+</html>
